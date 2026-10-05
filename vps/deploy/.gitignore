@@ -1,0 +1,17 @@
+# Generated credentials and server state must never be committed.
+client-info.txt
+links.txt
+state.json
+config.json
+release-metadata.json
+*.key
+*.pem
+*.ppk
+*.env
+*.zip
+*.tar
+*.tar.gz
+SOURCE.txt
+__pycache__/
+*.py[cod]
+
