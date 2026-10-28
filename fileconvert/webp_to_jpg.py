@@ -13,6 +13,24 @@ def wait_for_key(message):
         input()
 
 
+def ask_replace_source():
+    print("确认转换方式：")
+    print("  直接按回车：用 JPG 替换 WEBP 原文件（成功转换后删除 WEBP）")
+    print("  输入 n：保留 WEBP 原文件")
+    print("  输入 q：取消转换")
+    print("  如果同名 JPG 已存在，将覆盖该 JPG 文件。")
+
+    while True:
+        choice = input("请选择 [Y/n/q]（默认 Y）：").strip().lower()
+        if choice in ("", "y", "yes"):
+            return "replace"
+        if choice in ("n", "no"):
+            return "keep"
+        if choice in ("q", "quit"):
+            return "cancel"
+        print("请输入 y、n 或 q。")
+
+
 try:
     from PIL import Image
 except ImportError:
@@ -41,6 +59,12 @@ def convert_webp_files():
         print("没有找到 .webp 文件。")
         return
 
+    print(f"找到 {len(webp_files)} 个 .webp 文件。")
+    source_action = ask_replace_source()
+    if source_action == "cancel":
+        print("已取消，未处理任何文件。")
+        return
+
     success_count = 0
     failure_count = 0
 
@@ -62,6 +86,9 @@ def convert_webp_files():
                     output_image = image.convert("RGB")
 
                 output_image.save(target_path, "JPEG", quality=95)
+
+            if source_action == "replace":
+                source_path.unlink()
 
             print("成功")
             success_count += 1
